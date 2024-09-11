@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define V 5 // number of vertices in the graph
+
+bool isHamiltonian(int graph[V][V], int path[], int pos, int n) {
+    // base case: if we have visited all vertices, return true
+    if (pos == n) {
+        // check if there is an edge from the last vertex to the first vertex
+        if (graph[path[n-1]][path[0]] == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    // try each vertex as the next vertex in the path
+    for (int v = 0; v < n; v++) {
+        // check if the vertex is not already in the path
+        bool inPath = false;
+        for (int i = 0; i < pos; i++) {
+            if (path[i] == v) {
+                inPath = true;
+                break;
+            }
+        }
+        if (!inPath && graph[path[pos-1]][v] == 1) {
+            path[pos] = v;
+            if (isHamiltonian(graph, path, pos+1, n)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void printHamiltonian(int path[], int n) {
+    printf("Hamiltonian circuit: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", path[i]);
+    }
+    printf("%d\n", path[0]); // print the first vertex again to complete the circuit
+}
+
+int main() {
+	printf("Megha Syam(192210507)\n");
+    int graph[V][V] = {
+        {0, 1, 1, 1, 0},
+        {1, 0, 1, 0, 1},
+        {1, 1, 0, 1, 1},
+        {1, 0, 1, 0, 1},
+        {0, 1, 1, 1, 0}
+    };
+
+    int path[V];
+    path[0] = 0; // start at vertex 0
+
+    if (isHamiltonian(graph, path, 1, V)) {
+        printHamiltonian(path, V);
+    } else {
+        printf("No Hamiltonian circuit found\n");
+    }
+
+    return 0;
+}
