@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX 100
+
+int cost[MAX][MAX];
+int n;
+int min_cost = INT_MAX;
+
+void printSolution(int sol[]) {
+    int i;
+    printf("Solution: ");
+    for (i = 0; i < n; i++) {
+        printf("%d ", sol[i]);
+    }
+    printf("\n");
+}
+
+void branchAndBound(int sol[], int row, int col[], int cost_sum) {
+    if (row == n) {
+        if (cost_sum < min_cost) {
+            min_cost = cost_sum;
+            printSolution(sol);
+        }
+        return;
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (col[i] == 0) {
+            sol[row] = i;
+            col[i] = 1;
+            branchAndBound(sol, row + 1, col, cost_sum + cost[row][i]);
+            col[i] = 0;
+        }
+    }
+}
+
+void solveAssignmentProblem() {
+    int sol[MAX];
+    int col[MAX];
+    for (int i = 0; i < n; i++) {
+        col[i] = 0;
+    }
+    branchAndBound(sol, 0, col, 0);
+    printf("Minimum cost: %d\n", min_cost);
+}
+
+int main() {
+	printf("Megha Syam(192210507)\n");
+    printf("Enter the number of tasks and agents: ");
+    scanf("%d", &n);
+    printf("Enter the cost matrix:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &cost[i][j]);
+        }
+    }
+    solveAssignmentProblem();
+    return 0;
+}
